@@ -1,8 +1,10 @@
+import ejs from 'ejs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
 import {
+  buildAugmentedData,
   getGeneratedWebStubSentinel,
   getTemplateDistTag,
   getTemplateVersion,
@@ -142,5 +144,31 @@ describe('updateWebStub', () => {
     await expect(fs.promises.readFile(webFile, 'utf8')).resolves.toBe(
       'export default class MyModuleModule {}\n'
     );
+  });
+});
+
+const SNIPPETS_DIR = path.resolve(__dirname, '../../../expo-module-template/snippets');
+
+async function renderTemplateFile(relativePath: string, data: object): Promise<string> {
+  const template = await fs.promises.readFile(path.join(SNIPPETS_DIR, '..', relativePath), 'utf8');
+  return ejs.render(template, data);
+}
+
+describe('standalone SharedObject dependencies', () => {
+  it('declares a direct development dependency and a host-compatible peer dependency', async () => {
+    const data = await buildAugmentedData(SNIPPETS_DIR, {
+      ...mockData,
+      project: { ...mockData.project, features: ['SharedObject'] },
+    });
+    const pkg = JSON.parse(await renderTemplateFile('$package.json', data));
+    expect(pkg.devDependencies['expo-modules-core']).toBe('~58.0.0');
+    expect(pkg.peerDependencies['expo-modules-core']).toBe('*');
+  });
+
+  it('does not add the dependency when SharedObject is not selected', async () => {
+    const data = await buildAugmentedData(SNIPPETS_DIR, mockData);
+    const pkg = JSON.parse(await renderTemplateFile('$package.json', data));
+    expect(pkg.devDependencies['expo-modules-core']).toBeUndefined();
+    expect(pkg.peerDependencies['expo-modules-core']).toBeUndefined();
   });
 });

@@ -1,6 +1,3 @@
-/*
- * This file is unchanged, except for moving eslint comments and rethrowing rejections during render
- */
 import * as React from 'react';
 
 export function useThenable<T>(create: () => PromiseLike<T>) {

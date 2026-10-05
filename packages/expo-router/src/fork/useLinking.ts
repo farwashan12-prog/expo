@@ -82,6 +82,8 @@ export function useLinking(
     }
 
     const state = getStateFromURL(url);
+    // A layout needed for the anchors is still loading. The navigator renders after it loads.
+    // Otherwise, the thenable below resolves synchronously, so the first render already has the state.
     if (state instanceof Promise) {
       return state;
     }

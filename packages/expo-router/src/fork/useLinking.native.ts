@@ -110,10 +110,10 @@ export function useLinking(
   const getInitialState = useCallback(() => {
     const url = getInitialURL();
     const createInitialState = (url: string | null | undefined) => {
-      const parsedState =
-        url && (!filter || filter(url))
-          ? getStateFromPath(getInitialPath(prefixes, url), config)
-          : undefined;
+      const shouldParseURL = url && (!filter || filter(url));
+      const parsedState = shouldParseURL
+        ? getStateFromPath(getInitialPath(prefixes, url), config)
+        : undefined;
 
       const routeNode = routerConfig?.routeNode;
       return routeNode
@@ -126,6 +126,8 @@ export function useLinking(
     }
 
     const state = createInitialState(url);
+    // A layout needed for the anchors is still loading. The navigator renders after it loads.
+    // Otherwise, the thenable below resolves synchronously, so the first render already has the state.
     if (state instanceof Promise) {
       return state;
     }

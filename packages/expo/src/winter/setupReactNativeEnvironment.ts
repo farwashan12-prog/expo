@@ -1,3 +1,6 @@
-// Platform variants of this file pick the entry
-// that the host React Native package for that platform ships.
-import 'react-native/setup-env';
+// Out-of-tree platforms on React Native < 0.87 ship only `InitializeCore`
+try {
+  require('react-native/setup-env');
+} catch {
+  require('react-native/Libraries/Core/InitializeCore');
+}

@@ -10,7 +10,6 @@ import {
   type LinkingOptions,
   getStateFromPath as getStateFromPathDefault,
   type NavigationContainerRef,
-  type NavigationState,
   type ParamListBase,
 } from '../react-navigation/native';
 import { ROOT_CHAIN } from '../react-navigation/routers/stateKeys';
@@ -61,7 +60,7 @@ export function useLinking(
     };
   }, []);
 
-  // `useThenable` only consumes this function from the first render, keeping initialization options consistent.
+  // `NavigationContainer` only consumes this function from the first render, keeping initialization options consistent.
   const getInitialState = () => {
     const getStateFromURL = (url: string | null | undefined) => {
       let path = url ? extractExpoPathFromURL(prefixes, url) : undefined;
@@ -81,23 +80,7 @@ export function useLinking(
       return url.then(getStateFromURL);
     }
 
-    const state = getStateFromURL(url);
-    // A layout needed for the anchors is still loading. The navigator renders after it loads.
-    // Otherwise, the thenable below resolves synchronously, so the first render already has the state.
-    if (state instanceof Promise) {
-      return state;
-    }
-
-    const thenable = {
-      then(onfulfilled?: (state: NavigationState | undefined) => void) {
-        return Promise.resolve(onfulfilled ? onfulfilled(state) : state);
-      },
-      catch() {
-        return thenable;
-      },
-    };
-
-    return thenable as PromiseLike<NavigationState | undefined>;
+    return getStateFromURL(url);
   };
 
   return {

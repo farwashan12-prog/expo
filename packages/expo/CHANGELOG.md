@@ -1,5 +1,20 @@
 # Changelog
 
+## 58.0.6
+
+### Patch Changes
+
+- [Internal] Import `LogBox`, `DevSettings`, and `NativeComponentRegistry` from the `react-native` public API. ([#50862](https://github.com/expo/expo/pull/50862) by [@huntie](https://github.com/huntie))
+- [Internal] Import React Native internals from `react-native/unstable-internals-do-not-use`. ([#50860](https://github.com/expo/expo/pull/50860) by [@huntie](https://github.com/huntie))
+- Updated dependencies. ([#51044](https://github.com/expo/expo/pull/51044), [#51092](https://github.com/expo/expo/pull/51092), [#50862](https://github.com/expo/expo/pull/50862), [#50860](https://github.com/expo/expo/pull/50860), [#50543](https://github.com/expo/expo/pull/50543), [#50696](https://github.com/expo/expo/pull/50696))
+  - expo-modules-core@58.0.14
+  - expo-asset@58.0.13
+  - @expo/log-box@58.0.11
+  - @expo/metro-config@58.0.10
+  - babel-preset-expo@58.0.11
+  - expo-file-system@58.0.7
+  - @expo/cli@58.1.5
+
 ## 58.0.5
 
 ### Patch Changes
